@@ -1,1 +1,48 @@
-<p>vehicles-detail works!</p>
+<div class="p-d-flex p-jc-center p-ai-center" style="height: 100vh;">
+    <div class="p-card p-shadow-4" style="width: 600px; max-width: 100%; background-color: #f4f4f4;">
+    <h2 class="p-text-center">Editar Vehículo</h2>
+
+    <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
+        <div class="p-field">
+        <label for="vehicleTypeId">Tipo de Vehículo</label>
+        <input
+            id="vehicleTypeId"
+            type="text"
+            pInputText
+            formControlName="vehicleTypeId"
+            [ngClass]="{'p-invalid': vehicleForm.get('vehicleTypeId')?.invalid && vehicleForm.get('vehicleTypeId')?.touched}"
+        />
+          <small *ngIf="vehicleForm.get('vehicleTypeId')?.invalid && vehicleForm.get('vehicleTypeId')?.touched" class="p-error">El tipo de vehículo es obligatorio.</small>
+        </div>
+
+        <div class="p-field">
+        <label for="regNumber">Número de Registro</label>
+        <input
+            id="regNumber"
+            type="text"
+            pInputText
+            formControlName="regNumber"
+            [ngClass]="{'p-invalid': vehicleForm.get('regNumber')?.invalid && vehicleForm.get('regNumber')?.touched}"
+        />
+          <small *ngIf="vehicleForm.get('regNumber')?.invalid && vehicleForm.get('regNumber')?.touched" class="p-error">El número de registro es obligatorio.</small>
+        </div>
+
+        <div class="p-field">
+        <label for="regDate">Fecha de Registro</label>
+        <input
+            id="regDate"
+            type="date"
+            pInputText
+            formControlName="regDate"
+            [ngClass]="{'p-invalid': vehicleForm.get('regDate')?.invalid && vehicleForm.get('regDate')?.touched}"
+        />
+          <small *ngIf="vehicleForm.get('regDate')?.invalid && vehicleForm.get('regDate')?.touched" class="p-error">La fecha de registro es obligatoria.</small>
+        </div>
+
+        <div class="p-field p-text-center">
+        <button pButton label="Guardar Cambios" icon="pi pi-check" type="submit" [disabled]="vehicleForm.invalid"></button>
+        <button pButton label="Volver" icon="pi pi-arrow-left" (click)="goBack()" class="p-button-secondary p-ml-2"></button>
+        </div>
+    </form>
+    </div>
+</div>

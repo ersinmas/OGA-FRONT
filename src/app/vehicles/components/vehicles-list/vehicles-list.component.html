@@ -1,1 +1,33 @@
-<p>vehicles-list works!</p>
+<div class="lg:col-6 col-offset-3 md:col-10 col-offset-1 sm:col-12 col-offset-0" style="background-color: #d6d8ba;">
+    <div class="p-shadow-8 p-p-4 p-col-12">
+    <h2 class="text-center">Listado de Vehículos</h2>
+
+    <!-- Campo de búsqueda -->
+<div class="p-inputgroup">
+<span class="p-inputgroup-addon"><i class="pi pi-search"></i></span>
+<input type="text" [formControl]="searchControl" placeholder="Buscar por número de registro..." class="p-inputtext p-fluid" />
+</div>
+
+    <!-- Tabla de vehículos -->
+    <table class="p-datatable p-mt-4">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Número de Registro</th>
+            <th>Fecha de Registro</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vehiculo of vehiculosFiltrados let i = index"
+            (click)="verDetalle(vehiculo.vehicleId)"
+            [ngClass]="{'bg-blue-100': i % 2 === 0, 'bg-yellow-100': i % 2 !== 0}" style="cursor:pointer;">
+            <td>{{ vehiculo.vehicleId }}</td>
+            <td>{{ vehiculo.vehicleTypeId }}</td>
+            <td>{{ vehiculo.regNumber }}</td>
+            <td>{{ vehiculo.regDate }}</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
