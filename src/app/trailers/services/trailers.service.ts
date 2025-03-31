@@ -7,7 +7,7 @@ import { catchError, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TrailersService {
-  private apiUrl = 'https://localhost:7297/api/Trailers'; // Ajusta la URL según tu backend
+  private apiUrl = 'https://localhost:7297/api/Trailers'; 
 
   constructor(private http: HttpClient) {}
 

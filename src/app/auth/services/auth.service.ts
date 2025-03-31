@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, tap, throwError } from 'rxjs';
 import { User } from '../../shared/models/User';
+import {jwtDecode} from 'jwt-decode';
 
 
 @Injectable({ providedIn: 'root' })
@@ -35,8 +36,10 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.user();
+    const token = localStorage.getItem('token');
+    return !!token && !this.isTokenExpired(token); 
   }
+
 
   getUser(): User | null {
     return this.user();
@@ -44,5 +47,15 @@ export class AuthService {
 
   setUser(user: User): void {
     this.user.set(user);
-   }
+  }
+
+  isTokenExpired(token: string): boolean {
+    try {
+      const decoded: any = jwtDecode(token);
+      const currentTime = Math.floor(Date.now() / 1000);
+      return decoded.exp < currentTime; 
+    } catch (e) {
+      return true; 
+    }
+  }
 }

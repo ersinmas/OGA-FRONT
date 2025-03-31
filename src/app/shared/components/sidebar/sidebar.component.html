@@ -1,15 +1,10 @@
-<!-- Sidebar -->
 <p-sidebar [(visible)]="displaySidebar" position="left" [baseZIndex]="10000" [modal]="true">
   <div class="logo">
-    <!-- Aquí puedes poner tu logo -->
-    <img src="assets/logo.png" alt="Logo">
   </div>
 
-  <!-- Menú -->
   <p-menu [model]="items">
     <ng-template #item let-item>
       <ng-container *ngIf="item.route; else elseBlock">
-        <!-- Si tiene 'route', es un enlace de Angular -->
         <a [routerLink]="item.route" class="p-menu-item-link">
           <span [class]="item.icon"></span>
           <span class="ml-2">{{ item.label }}</span>
@@ -17,7 +12,6 @@
       </ng-container>
 
       <ng-template #elseBlock>
-        <!-- Si no tiene 'route', es un enlace externo -->
         <a [href]="item.url" class="p-menu-item-link" target="_blank">
           <span [class]="item.icon"></span>
           <span class="ml-2">{{ item.label }}</span>
@@ -26,10 +20,8 @@
     </ng-template>
   </p-menu>
 
-  <!-- Botones de Login/Logout -->
   <button *ngIf="!isAuthenticated" pButton label="Login" icon="pi pi-sign-in" (click)="login()"></button>
   <button *ngIf="isAuthenticated" pButton label="Logout" icon="pi pi-sign-out" (click)="logout()"></button>
 </p-sidebar>
 
-<!-- Botón de hamburguesa para pantallas pequeñas -->
 <button *ngIf="!displaySidebar" pButton icon="pi pi-bars" class="p-button-rounded p-button-text" (click)="toggleSidebar()"></button>

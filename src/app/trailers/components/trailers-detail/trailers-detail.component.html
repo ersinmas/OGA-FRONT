@@ -49,12 +49,11 @@
         <div class="p-field p-text-center">
           <button pButton label="Guardar Cambios" icon="pi pi-check" (click)="submit()" [disabled]="trailerForm.invalid"></button>
           <button pButton label="Volver" icon="pi pi-arrow-left" (click)="goBack()" class="p-button-secondary p-ml-2"></button>
-          <button pButton label="Eliminar" icon="pi-delete-left" (click)="delete()" class="p-button-danger p-ml-2"></button>
+          <button *ngIf="trailerId !== 0" pButton label="Eliminar" icon="pi-delete-left" (click)="delete()" class="p-button-danger p-ml-2"></button>
         </div>
       </form>
     </div>
   </div>
   
-  <!-- Toast component for displaying success or error messages -->
   <p-toast></p-toast>
   

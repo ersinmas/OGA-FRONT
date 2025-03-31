@@ -10,7 +10,7 @@ export const routes: Routes = [
   { 
     path: 'vehicles', 
     loadComponent: () => import('./vehicles/components/vehicles-list/vehicles-list.component').then(m => m.VehiclesListComponent),
-    //canActivate: [guardAuthGuard] // Descomentar para proteger esta ruta con autenticación
+    canActivate: [guardAuthGuard] 
   },
   { 
     path: 'vehicles/:id', 
@@ -20,12 +20,12 @@ export const routes: Routes = [
   { 
     path: 'trailers', 
     loadComponent: () => import('./trailers/components/trailers-list/trailers-list.component').then(m => m.TrailersListComponent),
-    canActivate: [guardAuthGuard]
+    //canActivate: [guardAuthGuard]
   },
   { 
     path: 'trailers/:id', 
     loadComponent: () => import('./trailers/components/trailers-detail/trailers-detail.component').then(m => m.TrailersDetailComponent),
-    canActivate: [guardAuthGuard]
+    //canActivate: [guardAuthGuard]
   },
   { path: '**', component: NotFoundComponent }
 

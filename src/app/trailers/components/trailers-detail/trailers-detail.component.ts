@@ -135,9 +135,9 @@ delete() {
         detail: 'El Trailer ha sido eliminado correctamente.',
       });
 
-      this.trailerForm.reset();  // Resetear el formulario
-      this.trailerId = 0;        // Resetear el ID para evitar referencia errónea
-      this.trailer = undefined;  // Eliminar el objeto en memoria
+      this.trailerForm.reset();  
+      this.trailerId = 0;        
+      this.trailer = undefined;  
 
       setTimeout(() => {
         this.goBack();

@@ -1,13 +1,13 @@
-<div class="layout grid h-screen">
-  <!-- Sidebar: ocupa 1/4 del ancho -->
-  <div class="col-3 md:col-2 lg:col-2 xl:col-2">
-      <app-sidebar></app-sidebar>
-  </div>
+<div class="flex h-screen w-screen overflow-hidden bg-white">
+    <div class="w-60 md:w-52 lg:w-48 xl:w-44 h-full bg-white shadow-lg border-r border-gray-300
+                fixed md:relative left-0 top-0">
+        <app-sidebar></app-sidebar>
+    </div>
 
-  <!-- Contenido: ocupa el resto del espacio -->
-  <div class="col-9 md:col-10 lg:col-10 xl:col-10 flex  justify-content-center">
-      <div class="content w-full">
-          <router-outlet></router-outlet>
-      </div>
-  </div>
+    <div class="flex flex-1 justify-center items-center p-4 w-full 
+                pl-0 md:pl-52 lg:pl-48 xl:pl-44">
+        <div class="w-full max-w-4xl">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
 </div>

@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',  // Asegúrate de que esta ruta sea correcta
+  templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true,
     imports: [InputTextModule,PasswordModule,ButtonModule,MessagesModule,MessageModule,ReactiveFormsModule,CommonModule]
@@ -24,10 +24,9 @@ export class LoginComponent {
   loginForm: FormGroup;
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
-    // Crear el formulario con validaciones
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],  // Validación de email
-      password: ['', [Validators.required, Validators.minLength(6)]]  // Validación de contraseña
+      email: ['', [Validators.required, Validators.email]], 
+      password: ['', [Validators.required, Validators.minLength(6)]]  
     });
   }
 
@@ -40,7 +39,7 @@ export class LoginComponent {
       }
 
       try {
-        const token = await firstValueFrom(this.authService.login(user));  // Llamada al servicio de login
+        const token = await firstValueFrom(this.authService.login(user)); 
         console.log('Login exitoso, token recibido:', token);
         this.router.navigate(['/vehicles']);
       } catch (err) {

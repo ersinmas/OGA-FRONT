@@ -6,11 +6,13 @@ import { MenuModule } from 'primeng/menu';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { AuthService } from '../../../auth/services/auth.service';
 import { MenuItem } from 'primeng/api';
+import { SidebarModule } from 'primeng/sidebar';
+
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, MenuModule, PanelMenuModule], 
+  imports: [CommonModule, RouterModule, ButtonModule, MenuModule, PanelMenuModule, SidebarModule], 
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
@@ -19,11 +21,9 @@ export class SidebarComponent implements OnInit {
   isAuthenticated: boolean = false;
   displaySidebar: boolean = false;  // Controlar el estado de visibilidad del sidebar
 
-  // Aquí, definimos los elementos del menú con propiedades 'route' y 'url'
   items: MenuItem[] = [
     { label: 'Vehicles', icon: 'pi pi-car', route: '/vehicles' },
     { label: 'Trailers', icon: 'pi pi-truck', route: '/trailers' },
-    { label: 'External Link', icon: 'pi pi-link', url: 'https://external-link.com' }
   ];
 
   constructor(private authService: AuthService, private router: Router) { }
