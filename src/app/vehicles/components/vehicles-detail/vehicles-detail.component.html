@@ -1,48 +1,61 @@
-<div class="p-d-flex p-jc-center p-ai-center" style="height: 100vh;">
-    <div class="p-card p-shadow-4" style="width: 600px; max-width: 100%; background-color: #f4f4f4;">
-    <h2 class="p-text-center">Editar Vehículo</h2>
+<div class="lg:col-6 col-offset-3 md:col-6 col-offset-3 sm:col-6 col-offset-1 " style="background-color: #d6d8ba;">
+  <div class="p-card p-shadow-4" style="width: 600px; max-width: 100%; background-color: #d6d8ba;">
+    <h2 class="p-text-center" *ngIf="!isNew">Editar Vehículo</h2>
+    <h2 class="p-text-center" *ngIf="isNew">Crear Vehículo</h2>
 
-    <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
-        <div class="p-field">
+    <form [formGroup]="vehicleForm" >
+      <div class="p-field">
         <label for="vehicleTypeId">Tipo de Vehículo</label>
-        <input
-            id="vehicleTypeId"
-            type="text"
-            pInputText
-            formControlName="vehicleTypeId"
-            [ngClass]="{'p-invalid': vehicleForm.get('vehicleTypeId')?.invalid && vehicleForm.get('vehicleTypeId')?.touched}"
-        />
-          <small *ngIf="vehicleForm.get('vehicleTypeId')?.invalid && vehicleForm.get('vehicleTypeId')?.touched" class="p-error">El tipo de vehículo es obligatorio.</small>
-        </div>
+        <select
+          id="vehicleTypeId"
+          formControlName="vehicleTypeId"
+          pInputText
+          [ngClass]="{'p-invalid': vehicleForm.get('vehicleTypeId')?.invalid && vehicleForm.get('vehicleTypeId')?.touched}"
+        >
+          <option value="" disabled>Seleccione el tipo de vehículo</option>
+          <option *ngFor="let type of vehicleTypes" [value]="type.value">{{ type.label }}</option>
+        </select>
+        <small *ngIf="vehicleForm.get('vehicleTypeId')?.invalid && vehicleForm.get('vehicleTypeId')?.touched" class="p-error">
+          El tipo de vehículo es obligatorio.
+        </small>
+      </div>
 
-        <div class="p-field">
+      <div class="p-field">
         <label for="regNumber">Número de Registro</label>
         <input
-            id="regNumber"
-            type="text"
-            pInputText
-            formControlName="regNumber"
-            [ngClass]="{'p-invalid': vehicleForm.get('regNumber')?.invalid && vehicleForm.get('regNumber')?.touched}"
+          id="regNumber"
+          type="number"
+          pInputText
+          formControlName="regNumber"
+          [ngClass]="{'p-invalid': vehicleForm.get('regNumber')?.invalid && vehicleForm.get('regNumber')?.touched}"
         />
-          <small *ngIf="vehicleForm.get('regNumber')?.invalid && vehicleForm.get('regNumber')?.touched" class="p-error">El número de registro es obligatorio.</small>
-        </div>
+        <small *ngIf="vehicleForm.get('regNumber')?.invalid && vehicleForm.get('regNumber')?.touched" class="p-error">
+          El número de registro es obligatorio.
+        </small>
+      </div>
 
-        <div class="p-field">
+      <div class="p-field">
         <label for="regDate">Fecha de Registro</label>
         <input
-            id="regDate"
-            type="date"
-            pInputText
-            formControlName="regDate"
-            [ngClass]="{'p-invalid': vehicleForm.get('regDate')?.invalid && vehicleForm.get('regDate')?.touched}"
+          id="regDate"
+          type="date"
+          pInputText
+          formControlName="regDate"
+          [ngClass]="{'p-invalid': vehicleForm.get('regDate')?.invalid && vehicleForm.get('regDate')?.touched}"
         />
-          <small *ngIf="vehicleForm.get('regDate')?.invalid && vehicleForm.get('regDate')?.touched" class="p-error">La fecha de registro es obligatoria.</small>
-        </div>
+        <small *ngIf="vehicleForm.get('regDate')?.invalid && vehicleForm.get('regDate')?.touched" class="p-error">
+          La fecha de registro es obligatoria.
+        </small>
+      </div>
 
-        <div class="p-field p-text-center">
-        <button pButton label="Guardar Cambios" icon="pi pi-check" type="submit" [disabled]="vehicleForm.invalid"></button>
+      <div class="p-field p-text-center">
+        <button pButton label="Guardar Cambios" icon="pi pi-check" (click)="submit()" [disabled]="vehicleForm.invalid"></button>
         <button pButton label="Volver" icon="pi pi-arrow-left" (click)="goBack()" class="p-button-secondary p-ml-2"></button>
-        </div>
+        <button pButton label="Eliminar" icon="pi-delete-left" (click)="delete()" class="p-button-danger p-ml-2"></button>
+      </div>
     </form>
-    </div>
+  </div>
 </div>
+<app-vehicle-trailer *ngIf="vehicleId" [vehicleId]="vehicleId"></app-vehicle-trailer>
+
+<p-toast></p-toast>

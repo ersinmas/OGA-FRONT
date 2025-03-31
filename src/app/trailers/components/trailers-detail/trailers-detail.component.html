@@ -1,1 +1,60 @@
-<p>trailers-detail works!</p>
+<div class="lg:col-6 col-offset-3 md:col-6 col-offset-3 sm:col-6 col-offset-1 " style="background-color: #d6d8ba;">
+  <div class="p-card p-shadow-4" style="width: 600px; max-width: 100%; background-color: #d6d8ba;">
+      <h2 class="p-text-center" *ngIf="!isNew">Editar Trailer</h2>
+      <h2 class="p-text-center" *ngIf="isNew">Crear Trailer</h2>
+  
+      <form [formGroup]="trailerForm">
+        <div class="p-field">
+            <label for="maxWeight">Peso Máximo</label>
+            <input
+              id="maxWeight"
+              type="number"
+              pInputText
+              formControlName="maxWeight"
+              [ngClass]="{'p-invalid': trailerForm.get('maxWeight')?.invalid && trailerForm.get('maxWeight')?.touched}"
+            />
+            <small *ngIf="trailerForm.get('maxWeight')?.invalid && trailerForm.get('maxWeight')?.touched" class="p-error">
+              El número de registro es obligatorio.
+            </small>
+          </div>
+  
+        <div class="p-field">
+          <label for="regNumber">Número de Registro</label>
+          <input
+            id="regNumber"
+            type="number"
+            pInputText
+            formControlName="regNumber"
+            [ngClass]="{'p-invalid': trailerForm.get('regNumber')?.invalid && trailerForm.get('regNumber')?.touched}"
+          />
+          <small *ngIf="trailerForm.get('regNumber')?.invalid && trailerForm.get('regNumber')?.touched" class="p-error">
+            El número de registro es obligatorio.
+          </small>
+        </div>
+  
+        <div class="p-field">
+          <label for="regDate">Fecha de Registro</label>
+          <input
+            id="regDate"
+            type="date"
+            pInputText
+            formControlName="regDate"
+            [ngClass]="{'p-invalid': trailerForm.get('regDate')?.invalid && trailerForm.get('regDate')?.touched}"
+          />
+          <small *ngIf="trailerForm.get('regDate')?.invalid && trailerForm.get('regDate')?.touched" class="p-error">
+            La fecha de registro es obligatoria.
+          </small>
+        </div>
+  
+        <div class="p-field p-text-center">
+          <button pButton label="Guardar Cambios" icon="pi pi-check" (click)="submit()" [disabled]="trailerForm.invalid"></button>
+          <button pButton label="Volver" icon="pi pi-arrow-left" (click)="goBack()" class="p-button-secondary p-ml-2"></button>
+          <button pButton label="Eliminar" icon="pi-delete-left" (click)="delete()" class="p-button-danger p-ml-2"></button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Toast component for displaying success or error messages -->
+  <p-toast></p-toast>
+  

@@ -14,14 +14,10 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
   login(user: User) {
-    console.log('el user recibido en el servicio' + user, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    })
     return this.http.post<any>(`${this.apiUrl}`, user).pipe(
       tap(token => {
         console.log(token);
+        this.user.set(user);
         localStorage.setItem('token', token.token);
       }),
       catchError(err => {

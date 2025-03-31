@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Vehicle } from '../../../shared/models/vehicle';
 import { InputTextModule } from 'primeng/inputtext';
@@ -7,6 +7,8 @@ import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { CommonModule } from '@angular/common';
+import { VehiclesService } from '../../services/vehicles.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-vehicles-list',
@@ -18,34 +20,45 @@ import { CommonModule } from '@angular/common';
 
 
 export class VehiclesListComponent {
+  private vehiclesService = inject(VehiclesService);
+  vehicles = signal<Vehicle[]>([]);
   searchControl = new FormControl('');
   
-  vehiculos: Vehicle[] = [
-    { vehicleId: 1, vehicleTypeId: 101, regNumber: 1234, regDate: new Date(2022, 4, 10) },
-    { vehicleId: 2, vehicleTypeId: 102, regNumber: 5678, regDate: new Date(2021, 8, 15) },
-    { vehicleId: 3, vehicleTypeId: 103, regNumber: 9012, regDate: new Date(2023, 0, 20) },
-    { vehicleId: 4, vehicleTypeId: 104, regNumber: 3456, regDate: new Date(2020, 11, 5) }
-  ];
-  
-  vehiculosFiltrados: Vehicle[] = this.vehiculos;
+  vehiculosFiltrados: Vehicle[] | undefined;
+  static VehiclesListComponent: any;
 
-  constructor() {
+  constructor(private router: Router) {
+    this.vehiclesService.getVehicles().subscribe({
+      next:(data)=>{
+        this.vehicles.set(data)
+        this.vehiculosFiltrados = [...this.vehicles()]
+      },
+      error:(err) => console.error('Error Obteniendo vehiculos', err)
+    });
+
     this.searchControl.valueChanges.subscribe(value => {
       if(value){
       this.filtrarVehiculos(value);
       }else{
-      this.vehiculosFiltrados = this.vehiculos
+      this.vehiculosFiltrados = [...this.vehicles()]
       }
     });
   }
 
+
   filtrarVehiculos(value: string) {
-    this.vehiculosFiltrados = this.vehiculos.filter(vehiculo =>
+    this.vehiculosFiltrados = this.vehiculosFiltrados?.filter(vehiculo =>
       vehiculo.regNumber.toString().includes(value)
     );
   }
 
   verDetalle(idVehicle:number){
-    console.log(idVehicle)
+    console.log(['vehicles', idVehicle])
+    this.router.navigate(['vehicles/', idVehicle]); 
+  }
+
+  createNew(){
+    this.router.navigate(['vehicles/', 0]); 
+
   }
 }

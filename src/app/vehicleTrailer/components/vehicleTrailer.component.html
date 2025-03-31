@@ -1,0 +1,82 @@
+<div class="lg:col-6 col-offset-3 md:col-10 col-offset-1 sm:col-12 col-offset-0" style="background-color: #d6d8ba;">
+    <h3>Información del Trailer Asociado</h3>
+    
+    <!-- Si no se recibe vehicleTrailer -->
+    <div *ngIf="!vehicleTrailer">
+      <p>No se ha asignado un trailer a este vehículo.</p>
+      
+      <!-- Botón para añadir trailer -->
+      <button pButton label="Añadir Trailer" icon="pi pi-plus" (click)="showTrailers = !showTrailers" *ngIf="!vehicleTrailer"></button>
+      
+      <!-- Mostrar tabla con trailers disponibles -->
+      <div *ngIf="showTrailers">
+        <h4>Selecciona un Trailer</h4>
+        
+        <!-- Selección de fecha de fin -->
+        <div>
+          <label for="endDate">Fecha de Fin:</label>
+          <input 
+            type="date" 
+            id="endDate" 
+            [(ngModel)]="selectedEndDate" 
+            [min]="minEndDate" 
+            required 
+            *ngIf="!selectedTrailerId" 
+            />
+        </div>
+        
+        <table class="p-datatable p-datatable-responsive">
+          <thead>
+            <tr>
+              <th>ID Trailer</th>
+              <th>Placa</th>
+              <th>Capacidad</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let trailer of allTrailers">
+              <td>{{ trailer.trailerId }}</td>
+              <td>{{ trailer.regNumber }}</td>
+              <td>{{ trailer.regDate }} kg</td>
+              <td>{{ trailer.maxWeight }} kg</td>
+  
+              <td>
+                <button 
+                  pButton 
+                  label="Asignar" 
+                  icon="pi pi-check" 
+                  (click)="assignTrailer(trailer)"
+                  [disabled]="!selectedEndDate" 
+                ></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <!-- Si se recibe un vehicleTrailer -->
+    <div *ngIf="vehicleTrailer">
+      <table class="p-datatable p-datatable-responsive">
+        <thead>
+          <tr>
+            <th>ID Vehículo</th>
+            <th>ID Trailer</th>
+            <th>Fecha de Inicio</th>
+            <th>Fecha de Fin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ vehicleTrailer.vehicleId }}</td>
+            <td>{{ vehicleTrailer.trailerId }}</td>
+            <td>{{ vehicleTrailer.begDate | date:'dd/MM/yyyy' }}</td>
+            <td>{{ vehicleTrailer.endDate | date:'dd/MM/yyyy' }}</td>
+            <button pButton label="Eliminar" icon="pi-delete-left" (click)="removeTrailer()" class="p-button-danger p-ml-2"></button>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p-toast></p-toast>

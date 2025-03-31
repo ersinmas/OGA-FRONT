@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Vehicle } from '../../../shared/models/vehicle';
@@ -6,57 +6,155 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { VehiclesService } from '../../services/vehicles.service';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { VehicleTrailerComponent } from '../../../vehicleTrailer/components/vehicleTrailer.component';
 
 @Component({
   selector: 'app-vehicles-detail',
   standalone: true,
-  imports: [InputTextModule, ButtonModule, ReactiveFormsModule, CommonModule],
+  imports: [InputTextModule, ButtonModule, ReactiveFormsModule, CommonModule, ToastModule, VehicleTrailerComponent],
   templateUrl: './vehicles-detail.component.html',
-  styleUrl: './vehicles-detail.component.css'
+  styleUrls: ['./vehicles-detail.component.css'],
+  providers: [MessageService] 
 })
 export class VehiclesDetailComponent {
   vehicleForm: FormGroup;
   vehicleId: number;
-  vehicle: Vehicle;
+  vehicle: Vehicle | undefined;
+  private vehiclesService = inject(VehiclesService);
+  vehicles = signal<Vehicle | undefined>(undefined);
+  isNew: boolean = false;
+  vehicleTypes = [
+    { value: 1, label: 'Moto' },
+    { value: 2, label: 'Coche' },
+    { value: 3, label: 'Trailer' }
+  ];
+  static VehiclesDetailComponent: any;
 
-  constructor(private route: ActivatedRoute, private router: Router) {
-    this.vehicleId = Number(this.route.snapshot.paramMap.get('id')); // Obtener el ID del vehículo de la URL
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private messageService: MessageService
+  ) {
+    this.vehicleId = Number(this.route.snapshot.paramMap.get('id'));
 
-    // Simulamos obtener el vehículo desde algún servicio o una lista
-    this.vehicle = {
-      vehicleId: 1,
-      vehicleTypeId: 101,
-      regNumber: 1234,
-      regDate: new Date(2022, 4, 10)  // Ejemplo de fecha
-    };
-
-    // Transformamos la fecha a string con formato adecuado para el campo input[type="date"]
-    const formattedDate = this.formatDate(this.vehicle.regDate);
-
-    // Inicializamos el formulario con los valores
     this.vehicleForm = new FormGroup({
-      vehicleTypeId: new FormControl(this.vehicle.vehicleTypeId, Validators.required),
-      regNumber: new FormControl(this.vehicle.regNumber, Validators.required),
-      regDate: new FormControl(formattedDate, Validators.required)  // Aquí se pasa la fecha en formato string
+      vehicleId: new FormControl('', Validators.required),
+      vehicleTypeId: new FormControl('', Validators.required),
+      regNumber: new FormControl('', Validators.required),
+      regDate: new FormControl('', Validators.required),
     });
-  }
 
-  // Método para formatear la fecha en formato yyyy-MM-dd
-  formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);  // +1 porque los meses empiezan en 0
-    const day = ('0' + date.getDate()).slice(-2);
-    return `${year}-${month}-${day}`;
-  }
-
-  onSubmit() {
-    if (this.vehicleForm.valid) {
-      console.log('Formulario enviado:', this.vehicleForm.value);
-      // Aquí podrías enviar los datos al servidor o hacer algo con ellos
+    if (this.vehicleId !== 0) {
+      this.vehiclesService.getVehicleById(this.vehicleId).subscribe({
+        next: (data) => {
+          this.vehicle = data;
+          this.initializeForm(data);
+        },
+        error: (err) => console.error('Error obteniendo el vehículo', err),
+      });
+    } else {
+      this.isNew = true;
+      this.vehicleForm.setValue({
+        vehicleId: 0,
+        vehicleTypeId: null,
+        regNumber: null,
+        regDate: null,
+      });
     }
   }
 
+  initializeForm(vehicle: Vehicle) {
+    const formattedDate = this.formatDate(vehicle.regDate);
+
+    this.vehicleForm.setValue({
+      vehicleId: vehicle.vehicleId,
+      vehicleTypeId: vehicle.vehicleTypeId,
+      regNumber: vehicle.regNumber,
+      regDate: formattedDate,
+    });
+  }
+
+  formatDate(date: any): string {
+    const parsedDate = new Date(date);
+    const year = parsedDate.getFullYear();
+    const month = ('0' + (parsedDate.getMonth() + 1)).slice(-2);
+    const day = ('0' + parsedDate.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
+  }
+
+  submit() {
+    if (this.vehicleForm.valid) {
+      const vehiculeForm: Vehicle = this.vehicleForm.value;
+      if (this.isNew) {
+        this.vehiclesService.createVehicle(vehiculeForm).subscribe({
+          next: (ok) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'El vehículo ha sido guardado correctamente.',
+            });
+              setTimeout(() => {
+              this.goBack();
+            }, 2000);
+          },
+          error: (err) =>
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al añadir vehículo: ' + err,
+            }),
+        });
+      } else {
+        this.vehiclesService.updateVehicle(this.vehicleId, vehiculeForm).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'El vehículo ha sido actualizado correctamente.',
+            });
+              setTimeout(() => {
+              this.goBack();
+            }, 2000);
+          },
+          error: (err) =>
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al actualizar vehículo: ' + err,
+            }),
+        });
+      }
+    }
+  }
+  
+  delete() {
+    this.vehiclesService.deleteVehicle(this.vehicleId).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'El vehiculo ha sido eliminado correctamente.',
+        });
+  
+        setTimeout(() => {
+          this.goBack();
+        }, 2000);
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo eliminar el vehiculo. Inténtelo nuevamente.',
+        });
+      },
+    });
+  }
+  
+
   goBack() {
-    this.router.navigate(['/vehicles']);  // Volver al listado de vehículos
+    this.router.navigate(['/vehicles']);
   }
 }
