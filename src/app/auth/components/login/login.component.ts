@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { User } from '../../../shared/models/User';
@@ -10,6 +10,8 @@ import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 
 @Component({
@@ -17,11 +19,14 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true,
-    imports: [InputTextModule,PasswordModule,ButtonModule,MessagesModule,MessageModule,ReactiveFormsModule,CommonModule]
+    imports: [InputTextModule,PasswordModule,ButtonModule,MessagesModule,MessageModule,ReactiveFormsModule,CommonModule, ToastModule],
+    providers: [MessageService]
+
 })
 
 export class LoginComponent {
   loginForm: FormGroup;
+  private messageService = inject(MessageService);
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
@@ -40,11 +45,18 @@ export class LoginComponent {
 
       try {
         const token = await firstValueFrom(this.authService.login(user)); 
-        console.log('Login exitoso, token recibido:', token);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Usuario Autenticado con exito.'
+        });
         this.router.navigate(['/vehicles']);
       } catch (err) {
-        console.error('Error en login:', err);
-      }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error en el inicio de sessiòn:'+ err
+        });      }
     } else {
       alert('Por favor, complete todos los campos correctamente.');
     }

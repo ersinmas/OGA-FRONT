@@ -28,14 +28,14 @@
         <table class="p-datatable p-datatable-responsive">
           <thead>
             <tr>
+              <th>ID Vehículo</th>
               <th>ID Trailer</th>
-              <th>Placa</th>
-              <th>Capacidad</th>
-              <th>Acción</th>
+              <th>Fecha de Inicio</th>
+              <th>Fecha de Fin</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let trailer of allTrailers">
+            <tr *ngFor="let trailer of allTrailers let i = index" [ngClass]="{'bg-blue-100': i % 2 === 0, 'bg-yellow-100': i % 2 !== 0}" style="cursor:pointer;">
               <td>{{ trailer.trailerId }}</td>
               <td>{{ trailer.regNumber }}</td>
               <td>{{ trailer.regDate }} kg</td>
@@ -58,7 +58,7 @@
   
     <!-- Si se recibe un vehicleTrailer -->
     <div *ngIf="vehicleTrailer">
-      <table class="p-datatable p-datatable-responsive">
+      <table class="p-datatable p-datatable-responsive ">
         <thead>
           <tr>
             <th>ID Vehículo</th>
